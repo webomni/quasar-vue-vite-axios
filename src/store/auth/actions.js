@@ -20,8 +20,10 @@ export async function makeLogin({ commit }, body) {
       password,
     });
     commit("setToken", data.token);
+
     return data;
   } catch (error) {
+    console.log("error");
     console.log(error);
     return false;
   }

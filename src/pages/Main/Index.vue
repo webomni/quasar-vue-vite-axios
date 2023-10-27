@@ -21,7 +21,7 @@
     </q-scroll-area>
 
     <!-- Componente posts -->
-    <Posts v-for="item in 10" :key="item" />
+    <Posts :items="posts" />
 
     <!-- Componente BottomBar -->
     <div class="container-bottom full-width q-pb-lg">
@@ -41,6 +41,23 @@ export default {
     TopBar,
     BottomBar,
     Posts,
+  },
+  data() {
+    return {
+      posts: [],
+    };
+  },
+  async mounted() {
+    await this.loadAllPosts();
+  },
+  methods: {
+    async loadAllPosts() {
+      const token = this.$store.getters["auth/getJWT"];
+      const { data } = await this.$store.dispatch("posts/listAllPosts", {
+        token,
+      });
+      this.posts = data;
+    },
   },
 };
 </script>

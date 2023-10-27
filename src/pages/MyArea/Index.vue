@@ -14,7 +14,7 @@
       />
       <div class="full-width row justify-center">
         <q-icon name="fas fa-lock" color="black" size="11px" class="q-mr-xs" />
-        <strong>Jacob_w</strong>
+        <strong>{{ user.user_name }}</strong>
         <q-icon
           name="fas fa-chevron-down"
           color="black"
@@ -25,10 +25,16 @@
       <!-- avatar -->
       <div class="row items-center justify-between full-width q-mt-lg">
         <q-avatar size="96px" class="avatar-Profile">
-          <img class="avatar" src="https://cdn.quasar.dev/img/avatar.png" />
+          <img
+            class="avatar"
+            :src="
+              user.avatar ||
+              'https://static.wixstatic.com/media/8c80d0_a7717bbe054f4a8b9d0624bceecd2966.png/v1/fill/w_740,h_740,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/8c80d0_a7717bbe054f4a8b9d0624bceecd2966.png'
+            "
+          />
         </q-avatar>
         <div class="column items-center">
-          <strong>54</strong>
+          <strong>{{ posts.length }}</strong>
           <span>Posts</span>
         </div>
         <div class="column items-center">
@@ -42,8 +48,9 @@
       </div>
 
       <div class="column q-mt-md">
-        <strong>Jocob West</strong>
-        <span> Digital goodies disigner @pixsellz</span>
+        <strong>{{ user.user_name }}</strong>
+        <span v-if="user.bio"> {{ user.bio }}</span>
+        <span v-else>Adicione uma descrição em sua bio.</span>
         <span> Everything is designed. </span>
       </div>
       <q-btn
@@ -53,6 +60,7 @@
         class="btn-edit full-width q-my-md"
         text-color="black"
         label="Edit Profile"
+        @click="goTo('profile')"
       />
 
       <!-- avatar -->
@@ -84,10 +92,10 @@
       <div class="row q-mb-lg">
         <q-img
           :ratio="1"
-          v-for="item in 5"
-          :key="item"
+          v-for="item in posts"
+          :key="item.id"
           class="cursor-pointer col-4"
-          src="https://picsum.photos/500/300"
+          :src="item.image"
         />
       </div>
     </div>
@@ -111,11 +119,34 @@ export default {
     return {
       tab: "grid",
       drawerRight: false,
+      user: {},
+      token: this.$store.getters["auth/getJWT"],
+      posts: [],
     };
   },
   components: {
     BottomBar,
     MenuDrawer,
+  },
+  async mounted() {
+    this.loadProfileData();
+    await this.loadAllPosts();
+  },
+  methods: {
+    loadProfileData() {
+      this.user = this.$store.getters["user/getUserData"];
+    },
+    async loadAllPosts() {
+      const { data } = await this.$store.dispatch("posts/listMyPosts", {
+        token: this.token,
+      });
+      console.log("data");
+      console.log(data);
+      this.posts = data;
+    },
+    goTo(route) {
+      this.$router.push({ path: route });
+    },
   },
 };
 </script>

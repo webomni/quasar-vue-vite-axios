@@ -5,6 +5,7 @@
       height="25px"
       class="q-ml-sm"
       src="src/assets/house.svg"
+      @click="goTO('main')"
     />
     <q-img
       width="25px"
@@ -25,7 +26,7 @@
       src="src/assets/heart.svg"
     />
     <q-avatar size="28px">
-      <img src="https://cdn.quasar.dev/img/avatar.png" />
+      <img :src="user.avatar" @click="goTO('my-area')" />
     </q-avatar>
   </div>
 </template>
@@ -34,6 +35,22 @@
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "BottomBar",
+  data() {
+    return {
+      user: {},
+    };
+  },
+  mounted() {
+    this.loadProfileData();
+  },
+  methods: {
+    goTO(route) {
+      this.$router.push({ path: route });
+    },
+    loadProfileData() {
+      this.user = this.$store.getters["user/getUserData"];
+    },
+  },
 });
 </script>
 

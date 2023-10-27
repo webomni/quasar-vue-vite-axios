@@ -10,7 +10,7 @@
   >
     <div class="container-items">
       <div class="q-pl-md q-pt-xl">
-        <span>S. Khasanov_</span>
+        <span>{{ user.user_name }}</span>
         <div class="q-mt-lg">
           <q-img src="src/assets/archive.svg" width="24px" class="q-mr-sm" />
           <span>Archive</span>
@@ -66,6 +66,7 @@ export default defineComponent({
   data() {
     return {
       open: false,
+      user: {},
     };
   },
   props: {
@@ -80,9 +81,15 @@ export default defineComponent({
       this.open = this.drawerRight;
     },
   },
+  mounted() {
+    this.loadProfileData();
+  },
   methods: {
     hide() {
       this.$emit("close");
+    },
+    loadProfileData() {
+      this.user = this.$store.getters["user/getUserData"];
     },
   },
 });

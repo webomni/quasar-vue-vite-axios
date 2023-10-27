@@ -65,8 +65,8 @@ export default {
   name: "SignIn",
   data() {
     return {
-      credential: "",
-      password: "",
+      credential: "camila@dev2dev.dev.br",
+      password: "12345678",
     };
   },
   methods: {
@@ -75,8 +75,19 @@ export default {
         credential: this.credential,
         password: this.password,
       });
+
       if (result) {
-        this.$route.push({ path: "main" });
+        await this.loadProfileData(result.token);
+        this.$router.push({ path: "main" });
+      } else {
+        this.$q.notify({
+          type: "warning",
+          textColor: "yellow-1",
+          icon: "warning",
+          message: "Verifique as credenciais!",
+          position: "top",
+          timeout: 3000,
+        });
       }
 
       /* const response = await this.$api.post("/auth", {
@@ -85,6 +96,11 @@ export default {
       });
       console.log("response");
       console.log(response); */
+    },
+    async loadProfileData(token) {
+      await this.$store.dispatch("user/getUserProfile", {
+        token,
+      });
     },
   },
 };
